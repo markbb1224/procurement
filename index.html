@@ -8,23 +8,15 @@
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans TC', sans-serif; background: #F5F0E8; color: #2C2416; min-height: 100vh; }
-
   .app { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
-
   h1 { font-size: 22px; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
   h1 small { font-size: 11px; color: #A8967A; font-weight: 400; font-family: 'JetBrains Mono'; display: flex; align-items: center; gap: 5px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: #6B8C42; display: inline-block; animation: pulse 2s infinite; }
   .dot.off { background: #C4B89A; animation: none; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  .sec-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-    color: #7A6B55; padding-bottom: 10px; border-bottom: 2px solid #D4C9B0;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .sec-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #7A6B55; padding-bottom: 10px; border-bottom: 2px solid #D4C9B0; display: flex; align-items: center; gap: 8px; }
   .badge { font-family: 'JetBrains Mono'; background: #8B7355; color: #fff; border-radius: 10px; padding: 2px 9px; font-size: 10px; }
   .badge.g { background: #6B8C42; }
-
   .tbl-wrap { background: #FFFDF7; border-radius: 0 0 12px 12px; box-shadow: 0 2px 16px #8B7D6020; overflow: hidden; }
   table { width: 100%; border-collapse: collapse; }
   thead tr { background: #EDE8DF; border-bottom: 2px solid #D4C9B0; }
@@ -37,38 +29,20 @@
   tbody tr.done .item-td { text-decoration: line-through; color: #A8967A; }
   td { padding: 0; vertical-align: middle; }
   td.c { text-align: center; }
-
   .date-td { font-family: 'JetBrains Mono'; font-size: 12px; color: #A8967A; padding: 0 6px 0 14px; white-space: nowrap; width: 54px; }
-
-  input.ed {
-    background: none; border: none; outline: none;
-    font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: #2C2416;
-    width: 100%; padding: 11px 14px; transition: background 0.15s; border-radius: 4px;
-  }
+  input.ed { background: none; border: none; outline: none; font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: #2C2416; width: 100%; padding: 11px 14px; transition: background 0.15s; border-radius: 4px; }
   input.ed:focus { background: #EDE8DF; box-shadow: 0 0 0 2px #8B735540; }
   input.ed::placeholder { color: #C4B89A; }
-
   .chk-wrap { display: flex; align-items: center; justify-content: center; padding: 8px 14px; }
-  .chk {
-    width: 24px; height: 24px; border: 2px solid #D4C9B0; border-radius: 6px;
-    background: #FFFDF7; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; flex-shrink: 0; user-select: none;
-  }
+  .chk { width: 24px; height: 24px; border: 2px solid #D4C9B0; border-radius: 6px; background: #FFFDF7; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; user-select: none; }
   .chk:hover { border-color: #6B8C42; background: #EDF2E0; transform: scale(1.12); }
   .chk.on { background: #6B8C42; border-color: #6B8C42; }
   .chk svg { display: none; }
   .chk.on svg { display: block; }
-
   .del { background: none; border: none; color: #C4B89A; cursor: pointer; font-size: 18px; padding: 6px 12px; border-radius: 4px; transition: all 0.12s; line-height: 1; }
   .del:hover { color: #E03131; background: #FFF0F0; }
-
-  .add-btn {
-    display: block; width: 100%; background: #FFFDF7; border: none; border-top: 1px dashed #D4C9B0;
-    text-align: left; padding: 12px 14px; font-size: 13px; color: #A8967A;
-    cursor: pointer; font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; border-radius: 0 0 12px 12px;
-  }
+  .add-btn { display: block; width: 100%; background: #FFFDF7; border: none; border-top: 1px dashed #D4C9B0; text-align: left; padding: 12px 14px; font-size: 13px; color: #A8967A; cursor: pointer; font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; border-radius: 0 0 12px 12px; }
   .add-btn:hover { color: #7A6540; background: #EDE8DF; }
-
   hr { border: none; border-top: 2px dashed #D4C9B0; margin: 32px 0; }
   .empty { padding: 18px 14px; font-size: 13px; color: #C4B89A; }
 </style>
@@ -100,158 +74,145 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-<script>
-const room = "ofilxmsr";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, onValue, set, remove, push, update }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const gun = Gun(["https://gun.eco/gun", "https://peer.wallie.io/gun", "https://gundb-relay-mlmr.onrender.com/gun"]);
-const db = gun.get("procurement-" + room);
+  const firebaseConfig = {
+    apiKey: "AIzaSyCCXsklPE6aDSMiCDQgPA32_4L8F55KRPM",
+    authDomain: "company-tools-ea9e6.firebaseapp.com",
+    projectId: "company-tools-ea9e6",
+    storageBucket: "company-tools-ea9e6.firebasestorage.app",
+    messagingSenderId: "916169799488",
+    appId: "1:916169799488:web:f93aa61114c0fc18046ca5",
+    databaseURL: "https://company-tools-ea9e6-default-rtdb.asia-southeast1.firebasedatabase.app"
+  };
 
-let rows = {};
-let renderTimer = null;
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const rowsRef = ref(db, "procurement/items");
 
-function setConnected(v) {
-  document.getElementById("dot").className = "dot" + (v ? "" : " off");
-  document.getElementById("sync-label").textContent = v ? "即時同步中" : "連線中…";
-}
-setTimeout(() => setConnected(true), 2000);
+  let rows = {};
 
-function fmtDate(ts) {
-  if (!ts) return "";
-  const d = new Date(ts);
-  return `${d.getMonth()+1}/${d.getDate()}`;
-}
+  const connRef = ref(db, ".info/connected");
+  onValue(connRef, snap => {
+    const on = snap.val();
+    document.getElementById("dot").className = "dot" + (on ? "" : " off");
+    document.getElementById("sync-label").textContent = on ? "即時同步中" : "連線中…";
+  });
 
-db.map().on(function(data, id) {
-  if (id === "_") return;
-  if (data === null || data === undefined) {
-    delete rows[id];
-  } else {
-    rows[id] = { ...rows[id], ...data, id };
+  onValue(rowsRef, snap => {
+    rows = snap.val() || {};
+    render();
+  });
+
+  function fmtDate(ts) {
+    if (!ts) return "";
+    const d = new Date(ts);
+    return `${d.getMonth()+1}/${d.getDate()}`;
   }
-  scheduleRender();
-});
 
-function scheduleRender() {
-  clearTimeout(renderTimer);
-  renderTimer = setTimeout(render, 80);
-}
+  function render() {
+    const focusedId = document.activeElement?.id;
+    const selStart = document.activeElement?.selectionStart;
+    const selEnd = document.activeElement?.selectionEnd;
 
-function render() {
-  const focusedId = document.activeElement?.id;
-  const selStart = document.activeElement?.selectionStart;
-  const selEnd = document.activeElement?.selectionEnd;
+    const all = Object.entries(rows).map(([id, r]) => ({...r, id})).filter(r => !r._deleted);
+    const pending = all.filter(r => !r.done).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
+    const done = all.filter(r => r.done).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
 
-  const all = Object.values(rows).filter(r => r && r.id && !r._deleted);
-  const pending = all.filter(r => !r.done).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
-  const done = all.filter(r => r.done).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
+    document.getElementById("pending-count").textContent = pending.length;
+    document.getElementById("done-count").textContent = done.length;
+    renderTable("pending-body", pending);
+    renderTable("done-body", done);
 
-  document.getElementById("pending-count").textContent = pending.length;
-  document.getElementById("done-count").textContent = done.length;
-
-  renderTable("pending-body", pending);
-  renderTable("done-body", done);
-
-  if (focusedId) {
-    const el = document.getElementById(focusedId);
-    if (el) {
-      el.focus();
-      try { el.setSelectionRange(selStart, selEnd); } catch(e) {}
+    if (focusedId) {
+      const el = document.getElementById(focusedId);
+      if (el) { el.focus(); try { el.setSelectionRange(selStart, selEnd); } catch(e) {} }
     }
   }
-}
 
-function renderTable(tbodyId, rowList) {
-  const tbody = document.getElementById(tbodyId);
-  tbody.innerHTML = "";
-  if (rowList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty">' +
-      (tbodyId === "pending-body" ? "沒有待進貨項目" : "尚無紀錄") + '</div></td></tr>';
-    return;
+  function renderTable(tbodyId, rowList) {
+    const tbody = document.getElementById(tbodyId);
+    tbody.innerHTML = "";
+    if (rowList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5"><div class="empty">' + (tbodyId === "pending-body" ? "沒有待進貨項目" : "尚無紀錄") + '</div></td></tr>';
+      return;
+    }
+    rowList.forEach(row => tbody.appendChild(makeRow(row)));
   }
-  rowList.forEach(row => tbody.appendChild(makeRow(row)));
-}
 
-function makeRow(row) {
-  const tr = document.createElement("tr");
-  if (row.done) tr.classList.add("done");
+  function makeRow(row) {
+    const tr = document.createElement("tr");
+    if (row.done) tr.classList.add("done");
 
-  const dateTd = document.createElement("td");
-  dateTd.className = "date-td";
-  dateTd.textContent = fmtDate(row.createdAt);
-  tr.appendChild(dateTd);
+    const dateTd = document.createElement("td");
+    dateTd.className = "date-td";
+    dateTd.textContent = fmtDate(row.createdAt);
+    tr.appendChild(dateTd);
 
-  const itemTd = document.createElement("td");
-  itemTd.className = "item-td";
-  itemTd.appendChild(makeInput("item", row, "品項名稱…"));
-  tr.appendChild(itemTd);
+    const itemTd = document.createElement("td");
+    itemTd.className = "item-td";
+    itemTd.appendChild(makeInput("item", row, "品項名稱…"));
+    tr.appendChild(itemTd);
 
-  const noteTd = document.createElement("td");
-  noteTd.appendChild(makeInput("note", row, "備註"));
-  tr.appendChild(noteTd);
+    const noteTd = document.createElement("td");
+    noteTd.appendChild(makeInput("note", row, "備註"));
+    tr.appendChild(noteTd);
 
-  const chkTd = document.createElement("td");
-  chkTd.className = "c";
-  const wrap = document.createElement("div");
-  wrap.className = "chk-wrap";
-  const chk = document.createElement("div");
-  chk.className = "chk" + (row.done ? " on" : "");
-  chk.innerHTML = `<svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  chk.onclick = () => db.get(row.id).put({ done: !row.done });
-  wrap.appendChild(chk);
-  chkTd.appendChild(wrap);
-  tr.appendChild(chkTd);
+    const chkTd = document.createElement("td");
+    chkTd.className = "c";
+    const wrap = document.createElement("div");
+    wrap.className = "chk-wrap";
+    const chk = document.createElement("div");
+    chk.className = "chk" + (row.done ? " on" : "");
+    chk.innerHTML = `<svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    chk.onclick = () => update(ref(db, `procurement/items/${row.id}`), { done: !row.done });
+    wrap.appendChild(chk);
+    chkTd.appendChild(wrap);
+    tr.appendChild(chkTd);
 
-  const delTd = document.createElement("td");
-  delTd.className = "c";
-  const delBtn = document.createElement("button");
-  delBtn.className = "del";
-  delBtn.textContent = "×";
-  delBtn.onclick = () => {
-    db.get(row.id).put({ _deleted: true, item: "", note: "" });
-    delete rows[row.id];
-    scheduleRender();
+    const delTd = document.createElement("td");
+    delTd.className = "c";
+    const delBtn = document.createElement("button");
+    delBtn.className = "del";
+    delBtn.textContent = "×";
+    delBtn.onclick = () => remove(ref(db, `procurement/items/${row.id}`));
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+
+    return tr;
+  }
+
+  function makeInput(field, row, placeholder) {
+    const input = document.createElement("input");
+    input.className = "ed";
+    input.placeholder = placeholder;
+    input.value = row[field] || "";
+    input.id = `${field}-${row.id}`;
+    let saveTimer;
+    input.addEventListener("input", e => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => update(ref(db, `procurement/items/${row.id}`), { [field]: e.target.value }), 500);
+    });
+    input.addEventListener("keydown", e => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const seq = ["item", "note"];
+      const ni = seq.indexOf(field) + 1;
+      if (ni < seq.length) document.getElementById(`${seq[ni]}-${row.id}`)?.focus();
+      else window.addRow();
+    });
+    return input;
+  }
+
+  window.addRow = function() {
+    const newRef = push(rowsRef);
+    const data = { item: "", note: "", done: false, createdAt: Date.now() };
+    set(newRef, data);
+    setTimeout(() => document.getElementById("item-" + newRef.key)?.focus(), 300);
   };
-  delTd.appendChild(delBtn);
-  tr.appendChild(delTd);
-
-  return tr;
-}
-
-function makeInput(field, row, placeholder) {
-  const input = document.createElement("input");
-  input.className = "ed";
-  input.placeholder = placeholder;
-  input.value = row[field] || "";
-  input.id = `${field}-${row.id}`;
-  let saveTimer;
-  input.addEventListener("input", e => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => db.get(row.id).put({ [field]: e.target.value }), 400);
-  });
-  input.addEventListener("keydown", e => {
-    if (e.key !== "Enter") return;
-    e.preventDefault();
-    const seq = ["item", "note"];
-    const ni = seq.indexOf(field) + 1;
-    if (ni < seq.length) document.getElementById(`${seq[ni]}-${row.id}`)?.focus();
-    else addRow();
-  });
-  return input;
-}
-
-window.addRow = function() {
-  const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
-  const data = { item: "", note: "", done: false, createdAt: Date.now() };
-  rows[id] = { ...data, id };
-  db.get(id).put(data);
-  scheduleRender();
-  setTimeout(() => document.getElementById("item-" + id)?.focus(), 100);
-};
-
-setTimeout(() => {
-  if (Object.keys(rows).length === 0) addRow();
-}, 1500);
 </script>
 </body>
 </html>
