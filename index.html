@@ -45,9 +45,8 @@
     font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: #2C2416;
     width: 100%; padding: 11px 14px; transition: background 0.15s; border-radius: 4px;
   }
-  input.ed:focus { background: #EDE8DF; box-shadow: 0 0 0 2px #3B5BDB33; }
+  input.ed:focus { background: #EDE8DF; box-shadow: 0 0 0 2px #8B735540; }
   input.ed::placeholder { color: #C4B89A; }
-  input.ed.mono { font-family: 'JetBrains Mono'; font-size: 13px; color: #475569; }
 
   .chk-wrap { display: flex; align-items: center; justify-content: center; padding: 8px 14px; }
   .chk {
@@ -72,26 +71,6 @@
 
   hr { border: none; border-top: 2px dashed #D4C9B0; margin: 32px 0; }
   .empty { padding: 18px 14px; font-size: 13px; color: #C4B89A; }
-
-  /* Share bar */
-  .share-bar {
-    background: #FFFDF7; border: 1.5px solid #D4C9B0; border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
-    font-size: 13px; color: #7A6B55;
-  }
-  .share-bar strong { color: #7A6540; }
-  .share-url {
-    flex: 1; font-family: 'JetBrains Mono'; font-size: 11px; color: #7A6540;
-    background: #EDE8DF; border: none; outline: none; border-radius: 6px;
-    padding: 6px 10px; cursor: text; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .copy-btn {
-    background: #8B7355; color: #fff; border: none; border-radius: 6px;
-    padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
-    transition: background 0.15s; white-space: nowrap;
-  }
-  .copy-btn:hover { background: #7A6345; }
-  .copy-btn.done-copy { background: #6B8C42; }
 </style>
 </head>
 <body>
@@ -101,16 +80,10 @@
     <small><span class="dot off" id="dot"></span><span id="sync-label">連線中…</span></small>
   </h1>
 
-  <div class="share-bar">
-    📎 分享此連結給員工，大家同步編輯：
-    <input class="share-url" id="share-url" readonly>
-    <button class="copy-btn" id="copy-btn" onclick="copyLink()">複製連結</button>
-  </div>
-
   <div class="sec-label">待進貨 <span class="badge" id="pending-count">0</span></div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>日期</th><th>品項</th><th>數量／規格</th><th>備註</th><th class="c">已進貨</th><th></th></tr></thead>
+      <thead><tr><th>日期</th><th>品項</th><th>備註</th><th class="c">已進貨</th><th></th></tr></thead>
       <tbody id="pending-body"></tbody>
     </table>
     <button class="add-btn" onclick="addRow()">＋ 新增品項</button>
@@ -121,7 +94,7 @@
   <div class="sec-label">已進貨 <span class="badge g" id="done-count">0</span></div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>日期</th><th>品項</th><th>數量／規格</th><th>備註</th><th class="c">已進貨</th><th></th></tr></thead>
+      <thead><tr><th>日期</th><th>品項</th><th>備註</th><th class="c">已進貨</th><th></th></tr></thead>
       <tbody id="done-body"></tbody>
     </table>
   </div>
@@ -129,39 +102,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script>
-// Get or create room ID from URL
-const params = new URLSearchParams(location.search);
-let room = params.get("room");
-if (!room) {
-  room = Math.random().toString(36).slice(2, 10);
-  const url = new URL(location.href);
-  url.searchParams.set("room", room);
-  history.replaceState({}, "", url);
-}
+const room = "ofilxmsr";
 
-// Show share URL
-const shareUrl = location.href;
-document.getElementById("share-url").value = shareUrl;
-
-function copyLink() {
-  navigator.clipboard.writeText(shareUrl);
-  const btn = document.getElementById("copy-btn");
-  btn.textContent = "✓ 已複製";
-  btn.classList.add("done-copy");
-  setTimeout(() => { btn.textContent = "複製連結"; btn.classList.remove("done-copy"); }, 2000);
-}
-
-// Init Gun
 const gun = Gun(["https://gun-manhattan.herokuapp.com/gun", "https://gundb-relay-mlmr.onrender.com/gun"]);
 const db = gun.get("procurement-" + room);
 
 let rows = {};
 let renderTimer = null;
 
-// Connection status (simple heuristic)
-let connected = false;
 function setConnected(v) {
-  connected = v;
   document.getElementById("dot").className = "dot" + (v ? "" : " off");
   document.getElementById("sync-label").textContent = v ? "即時同步中" : "連線中…";
 }
@@ -173,7 +122,6 @@ function fmtDate(ts) {
   return `${d.getMonth()+1}/${d.getDate()}`;
 }
 
-// Listen for all row changes
 db.map().on(function(data, id) {
   if (id === "_") return;
   if (data === null || data === undefined) {
@@ -204,7 +152,6 @@ function render() {
   renderTable("pending-body", pending);
   renderTable("done-body", done);
 
-  // Restore focus
   if (focusedId) {
     const el = document.getElementById(focusedId);
     if (el) {
@@ -218,7 +165,7 @@ function renderTable(tbodyId, rowList) {
   const tbody = document.getElementById(tbodyId);
   tbody.innerHTML = "";
   if (rowList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6"><div class="empty">' +
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty">' +
       (tbodyId === "pending-body" ? "沒有待進貨項目" : "尚無紀錄") + '</div></td></tr>';
     return;
   }
@@ -229,29 +176,20 @@ function makeRow(row) {
   const tr = document.createElement("tr");
   if (row.done) tr.classList.add("done");
 
-  // Date
   const dateTd = document.createElement("td");
   dateTd.className = "date-td";
   dateTd.textContent = fmtDate(row.createdAt);
   tr.appendChild(dateTd);
 
-  // Item
   const itemTd = document.createElement("td");
   itemTd.className = "item-td";
-  itemTd.appendChild(makeInput("item", row, "品項名稱…", false));
+  itemTd.appendChild(makeInput("item", row, "品項名稱…"));
   tr.appendChild(itemTd);
 
-  // Qty
-  const qtyTd = document.createElement("td");
-  qtyTd.appendChild(makeInput("qty", row, "數量／規格", true));
-  tr.appendChild(qtyTd);
-
-  // Note
   const noteTd = document.createElement("td");
-  noteTd.appendChild(makeInput("note", row, "備註", false));
+  noteTd.appendChild(makeInput("note", row, "備註"));
   tr.appendChild(noteTd);
 
-  // Checkbox
   const chkTd = document.createElement("td");
   chkTd.className = "c";
   const wrap = document.createElement("div");
@@ -264,14 +202,13 @@ function makeRow(row) {
   chkTd.appendChild(wrap);
   tr.appendChild(chkTd);
 
-  // Delete
   const delTd = document.createElement("td");
   delTd.className = "c";
   const delBtn = document.createElement("button");
   delBtn.className = "del";
   delBtn.textContent = "×";
   delBtn.onclick = () => {
-    db.get(row.id).put({ _deleted: true, item: "", qty: "", note: "" });
+    db.get(row.id).put({ _deleted: true, item: "", note: "" });
     delete rows[row.id];
     scheduleRender();
   };
@@ -281,9 +218,9 @@ function makeRow(row) {
   return tr;
 }
 
-function makeInput(field, row, placeholder, mono) {
+function makeInput(field, row, placeholder) {
   const input = document.createElement("input");
-  input.className = "ed" + (mono ? " mono" : "");
+  input.className = "ed";
   input.placeholder = placeholder;
   input.value = row[field] || "";
   input.id = `${field}-${row.id}`;
@@ -295,7 +232,7 @@ function makeInput(field, row, placeholder, mono) {
   input.addEventListener("keydown", e => {
     if (e.key !== "Enter") return;
     e.preventDefault();
-    const seq = ["item","qty","note"];
+    const seq = ["item", "note"];
     const ni = seq.indexOf(field) + 1;
     if (ni < seq.length) document.getElementById(`${seq[ni]}-${row.id}`)?.focus();
     else addRow();
@@ -305,14 +242,13 @@ function makeInput(field, row, placeholder, mono) {
 
 window.addRow = function() {
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
-  const data = { item: "", qty: "", note: "", done: false, createdAt: Date.now() };
+  const data = { item: "", note: "", done: false, createdAt: Date.now() };
   rows[id] = { ...data, id };
   db.get(id).put(data);
   scheduleRender();
   setTimeout(() => document.getElementById("item-" + id)?.focus(), 100);
 };
 
-// Start with one empty row if empty
 setTimeout(() => {
   if (Object.keys(rows).length === 0) addRow();
 }, 1500);
